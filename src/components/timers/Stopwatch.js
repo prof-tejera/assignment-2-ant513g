@@ -7,7 +7,10 @@ import DisplayRounds from '../generic/DisplayRounds';
 import DisplayTime from '../generic/DisplayTime';
 
 
-// For the stopwatch, each new lap will be displayed on the bottom of the app with the time elasped since the last lap.
+// setTimeout(() => {
+//   div.html('Updating from componentDidMount!');
+// }, 5000);
+
 class Stopwatch extends React.Component {
   constructor(props) {
     super(props);
@@ -40,7 +43,15 @@ class Stopwatch extends React.Component {
                     pressed: true,
                     down: true,
                     value: 'Stop',
-                  }); } } }/>
+                  });
+            }
+            }
+            } />
+          
+
+
+
+          
         <Button value={'Reset'} type={'Reset'}onClick={e => {
                 this.setState({
                   hh: 0,
