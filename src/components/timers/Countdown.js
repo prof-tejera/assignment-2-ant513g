@@ -25,6 +25,7 @@ class Countdown extends React.Component {
       hh: 0,
       mm: 0,
       ss: 0,
+      ms: 0,
     };
   }
 
@@ -33,48 +34,42 @@ class Countdown extends React.Component {
   render() {
 
 
-    const { hh, mm, ss, interval } = this.state;
-// CORRECT WAY
-    // this.setState((state, props) => ({
-    //   counter: state.counter + props.increment
-    // }));
-
-
+    const { interval } = this.state;
     const tick = () => {
-      console.log('count ' + hh + ":" + mm + ":" + ss);
-      console.log('count', hh, 'this.state.hh', this.state.hh);
+      this.setState({
+        ss: this.state.ss - 1,
+        ms: setInterval(tick, 10),
+      });
       
-      //HOURS
-      if (this.state.mm == 0 && this.state.hh != 0) {
-        this.setState({
-          hh: this.state.hh - 1,
-        });
-      }
-      //MINUTES
-      if (this.state.ss == 0 && this.state.mm != 0) {
+      console.log('count ' + this.state.hh + ":" + this.state.mm + ":" + this.state.ss);
+      
+      if (this.state.ss == -1) {
+        console.log('This is 59!');
         this.setState({
           mm: this.state.mm - 1,
+          ss: 59,
         });
       }
-
-        if (this.state.ss == 59) {
+      if (this.state.mm == -1) {
         console.log('This is 59!');
         this.setState({
           hh: this.state.hh - 1,
-          mm: this.state.mm - 1,
+          mm: 59,
         });
-        
-      };
-      
-      this.setState({
-        ss: this.state.ss - 1,
-      });
+      }
+      if (this.state.hh == -1) {
+        console.log('This is 59!');
+        this.setState({
+          hh: 0,
+        });
+      }
     };
-    const isRunning = !!interval;
+
+    // const isRunning = !!interval;
     return (
       <Panel>
         <Display>
-          <DisplayTime hh={this.state.hh} mm={this.state.mm} ss={this.state.ss} ms='00' />
+          <DisplayTime hh={this.state.hh} mm={this.state.mm} ss={this.state.ss} ms={this.state.ms} />
         </Display>
         <Container>
         <Input name={'Hours'} value={this.state.hh}
@@ -101,22 +96,6 @@ class Countdown extends React.Component {
         </Container>
         <Container>
         <Button value={this.state.value} type={this.state.type}
-            // onClick = {() => { if (this.state.pressed) {
-            //       this.setState({
-            //         type: 'Start',
-            //         pressed: false,
-            //         down: false,
-            //         value: 'Start',
-            //       });
-            //     } else {
-            //       this.setState({
-            //         type: 'Stop',
-            //         pressed: true,
-            //         down: true,
-            //         value: 'Stop',
-            //       });
-            // }
-            // }}
             onClick={() => {
               if (interval) {
                 clearInterval(interval);
@@ -125,9 +104,24 @@ class Countdown extends React.Component {
                 });
               } else {
                 this.setState({
-                  interval: setInterval(tick, 1000),
+                  interval: setInterval(tick, 10),
                 });
               }
+              if (this.state.pressed) {
+                this.setState({
+                  type: 'Start',
+                  pressed: false,
+                  down: false,
+                  value: 'Start',
+                });
+              } else {
+                this.setState({
+                  type: 'Stop',
+                  pressed: true,
+                  down: true,
+                  value: 'Stop',
+                });
+          }
             }}
           />
         <Button value={'Reset'} type={'Reset'} onClick={e => {
