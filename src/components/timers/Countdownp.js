@@ -1,20 +1,11 @@
 import React from 'react';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import ReactDOM from 'react-dom';
-
-
 import DisplayTime from '../generic/DisplayTime';
 import Input from '../generic/Input';
 import Button from '../generic/Button';
 import Panel from '../generic/Panel';
 import Container from '../generic/Container';
 import Display from '../generic/Display';
-
-
-
-
-
-
+import Button from '../generic/Button';
 
 class Countdown extends React.Component {
   constructor(props) {
@@ -70,9 +61,16 @@ class Countdown extends React.Component {
         ss: this.state.ss - 1,
       });
     };
+
     const isRunning = !!interval;
+
+
+
+
+    
     return (
       <Panel>
+        <ButtonCopy />
         <Display>
           <DisplayTime hh={this.state.hh} mm={this.state.mm} ss={this.state.ss} ms='00' />
         </Display>
@@ -117,6 +115,8 @@ class Countdown extends React.Component {
             //       });
             // }
             // }}
+
+
             onClick={() => {
               if (interval) {
                 clearInterval(interval);
@@ -129,6 +129,13 @@ class Countdown extends React.Component {
                 });
               }
             }}
+          
+
+
+            
+
+
+
           />
         <Button value={'Reset'} type={'Reset'} onClick={e => {
                 this.setState({

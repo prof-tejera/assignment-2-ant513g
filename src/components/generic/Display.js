@@ -1,4 +1,4 @@
-import { Component } from "react";
+import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 
 
@@ -18,12 +18,14 @@ box-sizing: border-box;
   font-family: 'Inconsolata', monospace;
 `;
 
-class Display extends Component {
-    render() {
-      return <Container>{this.props.children}</Container>;
-    }
+const Display = (props) => {
+  return <Container>{props.children}</Container>;
 }
   
+ReactDOM.render(
+  <Display />,
+  document.getElementById('root')
+);
   
-  export default Display;
+export default Display;
 

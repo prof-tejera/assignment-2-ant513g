@@ -1,4 +1,4 @@
-import ReactDOM from 'react-dom';
+import { Component } from "react";
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
@@ -23,23 +23,23 @@ const HR = styled.hr`
   background-image: linear-gradient(to right, #342D9F, #4037C4, #342D9F);
 `;
 
-const DisplayRounds = (props) => {
-  return (
-    <>
+class DisplayRounds extends Component {
+  render() { 
+    return (
+      <>
       <HR />
       <Container>
-        <Label>{props.name} {props.lap}:</Label>
-        {props.hhLap}:
-        {props.mmLap}:
-        {props.ssLap}.
-        {props.msLap}
+        <Label>{this.props.name} {this.props.lap}:</Label>
+        {this.props.hhLap}:
+        {this.props.mmLap}:
+        {this.props.ssLap}.
+        {this.props.msLap}
         </Container>
         </>
-  );
+        );
+      };
+  
 }
-
-
-
 DisplayRounds.propTypes = {
   hhLap: PropTypes.number,
   mmLap: PropTypes.number,
@@ -56,8 +56,4 @@ DisplayRounds.defaultProps = {
   msLap: 0,
 };
   
-ReactDOM.render(
-  <DisplayRounds />,
-  document.getElementById('root')
-);
 export default DisplayRounds;

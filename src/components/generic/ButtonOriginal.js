@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import ReactDOM from 'react-dom';
+import {
+  Component
+} from "react";
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
@@ -59,42 +60,34 @@ const Circle = styled.div `
     }
 `;
 
-
-
-  
-
-const Button = (props) => {
-  const { onClick } = props;
-  const size = sizes[props.size];
-  const type = buttonType[props.type];
-  return (
-    <Circle >
+class Button extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: 'Start',
+      pressed: false,
+    };
+}
+  render() {
+    const size = sizes[this.props.size];
+    const type = buttonType[this.props.type];
+    const { onClick } = this.props;
+    return (
+      <Circle >
         <Container
-          pressed={props.pressed}
-          value={props.value}
+          pressed={this.state.pressed}
+          value={this.state.value}
           size={size}
           type={type}
-          onClick={props.onClick}
+          onClick={this.props.onClick}
         >
-          {props.value}
+          {this.props.value}
         </ Container>
+        
       </Circle >
-  );
-};
-
-Button.defaultProps = {
-  size: "medium",
-  type: "Default",
-  value: 'Start',
-  pressed: false,
-};
-
-
-ReactDOM.render(
-  <Button />,
-  document.getElementById('root')
-);
-
+    );
+  }
+}
 
 Button.propTypes = {
   size: PropTypes.oneOf(["small", "medium", "large"]),
@@ -102,7 +95,9 @@ Button.propTypes = {
 
 };
 
+Button.defaultProps = {
+  size: "medium",
+  type: "Default",
+};
 
 export default Button;
-
-

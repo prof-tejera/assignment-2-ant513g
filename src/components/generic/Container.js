@@ -1,4 +1,4 @@
-import { Component } from "react";
+import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 
 const Flex = styled.div`
@@ -9,11 +9,14 @@ margin: 1rem;
 flex-wrap: wrap;
 `;
 
-class Container extends Component {
-    render() {
-        return <Flex>{this.props.children}</Flex>;
-    }
+const Container = (props) => {
+    return <Flex>{props.children}</Flex>;
 }
   
-  export default Container;
+ReactDOM.render(
+    <Container />,
+    document.getElementById('root')
+);
+
+export default Container;
 

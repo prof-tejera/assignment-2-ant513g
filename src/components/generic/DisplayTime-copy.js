@@ -1,8 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import ReactDOM from 'react-dom';
+import { Component } from "react";
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import Display from './Display';
 
 const Container = styled.div`
     box-sizing: border-box;
@@ -18,12 +16,14 @@ const Container = styled.div`
     flex-wrap: wrap;
 `;
 
-const DisplayTime = (props) => {
-  return (
-    <Container>
-      {props.hh}:{props.mm}:{props.ss}.{props.ms}
-    </Container>
-  );
+class DisplayTime extends Component {
+  render() {
+    return (
+      <Container>
+        {this.props.hh}:{this.props.mm}:{this.props.ss}.{this.props.ms}
+      </Container>
+    );
+  };
 }
 
 DisplayTime.propTypes = {
@@ -40,10 +40,6 @@ DisplayTime.defaultProps = {
   ms: 0,
 };
 
-ReactDOM.render(
-  <DisplayTime />,
-  document.getElementById('root')
-);
   
 export default DisplayTime;
 

@@ -1,4 +1,4 @@
-import ReactDOM from 'react-dom';
+import { Component } from "react";
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
@@ -13,6 +13,7 @@ const BoxContainer = styled.div `
   font-size: 16px;
   vertical-align: baseline;
   cursor: pointer; 
+  
 `;
   
 const Select = styled.select`
@@ -48,16 +49,24 @@ margin: auto;
 text-align: center;
 `;
 
-const Input = (props) => {
-  // const { value } = this.state;
-    const { onChange, value } = props;
-  return (
-    <BoxContainer>
-       <Label for={props.name} value={value}>{props.name}</Label>
+class Input extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      click: false,
+      rounds: 0,
+    };
+  }
+  render() {
+    const { value } = this.state;
+    const { onChange } = this.props;
+    return (
+      <BoxContainer>
+       <Label for={this.props.name} value={value}>{this.props.name}</Label>
         <Select
-          name={props.name}
+          name={this.props.name}
           size="5"
-          onChange={props.onChange}
+          onChange={this.props.onChange}
         >
           <Option value='0'>0</Option>
           <Option value='1'>1</Option>
@@ -121,14 +130,9 @@ const Input = (props) => {
           <Option value='59'>59</Option>
         </Select>
       </ BoxContainer>
-  );
+      );
+    }
 }
-
-
-Input.defaultProps = {
-  rounds: 0,
-};
-
 Input.propTypes = {
     value: PropTypes.oneOfType([
       PropTypes.string,
@@ -142,8 +146,4 @@ Input.propTypes = {
     ]),
 }
   
-ReactDOM.render(
-  <Input />,
-  document.getElementById('root')
-);
 export default Input;
