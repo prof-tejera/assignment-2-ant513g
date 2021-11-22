@@ -1,4 +1,6 @@
 # Objective
+
+LINK: https://prof-tejera.github.io/assignment-2-ant513g/
 In this assignment, we will start using the foundation we lay in A1 and make our timers fully functional. Each timer will function as described in A1 and the user flow should be the following:
 
 - User opens the application
