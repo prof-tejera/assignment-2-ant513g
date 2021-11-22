@@ -45,14 +45,8 @@ class Documentation extends React.Component {
           />
           <DocumentComponent
             title="Button"
-            component={<Button value="Button" />}
+            component={<Button type='default' value='default'>Button</Button>}
             propDocs={[
-              {
-                prop: "size",
-                description: "Changes the size of the button",
-                type: "string",
-                defaultValue: "medium",
-              },
               {
                 prop: "type",
                 description: "Changes the type of button",
@@ -65,6 +59,13 @@ class Documentation extends React.Component {
                 type: "N/A",
                 defaultValue: "N/A",
               },
+              {
+                prop: "onChange",
+                description: "Binds the onChange",
+                type: "n/a",
+                defaultValue: "n/a",
+              },
+              
             ]}
           />
           <DocumentComponent
@@ -83,76 +84,11 @@ class Documentation extends React.Component {
                 type: "n/a",
                 defaultValue: "n/a",
               },
+              
             ]}
           />
-          <DocumentComponent
-            title="Display Time"
-            component={<DisplayTime />}
-            propDocs={[
-              {
-                prop: "hh",
-                description: "Sets the hours value",
-                type: "number",
-                defaultValue: 0,
-              },
-              {
-                prop: "mm",
-                description: "Set the minutes value",
-                type: "number",
-                defaultValue: 0,
-              },{
-                prop: "ss",
-                description: "Sets the seconds value",
-                type: "number",
-                defaultValue: 0,
-              },{
-                prop: "ms",
-                description: "Sets the milliseconds",
-                type: "number",
-                defaultValue: 0,
-              },
-            ]}
-          /><Background>
-          <DocumentComponent
-            title="Display Rounds"
-            component={<DisplayRounds />}
-            propDocs={[
-              {
-                prop: "hhLap",
-                description: "Sets the hours value",
-                type: "number",
-                defaultValue: 0,
-              },
-              {
-                prop: "mmLap",
-                description: "Set the minutes value",
-                type: "number",
-                defaultValue: 0,
-              },{
-                prop: "ssLap",
-                description: "Sets the seconds value",
-                type: "number",
-                defaultValue: 0,
-              },{
-                prop: "msLap",
-                description: "Sets the milliseconds",
-                type: "number",
-                defaultValue: 0,
-              },
-              {
-                prop: "lap",
-                description: "Sets the number of laps",
-                type: "number",
-                defaultValue: 1,
-              },
-              {
-                prop: "name",
-                description: "Sets the name of the rounds",
-                type: "string",
-                defaultValue: 'Lap',
-              },
-            ]}
-          /></Background>
+          <Background>
+         </Background>
         </div>
       </Container>
     );

@@ -1,141 +1,95 @@
-import React from 'react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect } from "react";
 import ReactDOM from 'react-dom';
-
-
-import DisplayTime from '../generic/DisplayTime';
-import Input from '../generic/Input';
-import Button from '../generic/Button';
 import Panel from '../generic/Panel';
-import Container from '../generic/Container';
-import Display from '../generic/Display';
+import TimerProvider, { TimerContext } from '../../context/TimerProvider';
+import { Container, Section, FlexBetween, LargeText } from '../../utils/containers';
+import { formatTime } from "../../utils/helpers";
+import DisplayTime from "../generic/DisplayTime";
+import Button from "../generic/Button";
+import Input from "../generic/Input";
+import { useInterval } from "../../hooks/hooks";
 
+//  Countdown
+//  A timer that counts down from X amount of time
+//  (e.g.count down to 0, starting at 2 minutes and 30)
 
+const Countdown = () => {
 
+  const {
+    time,
+    setTime,
+    state,
+    setState,
+    ss,
+    setSS,
+    mm,
+    setMM,
+    hh,
+    setHH,
+    countDown,
+    getMs,
+    timerDone,
+    countReset,
+  } = useContext(TimerContext);
+ 
 
+  const intervalRef = useInterval(() => {
+    if (state.isRunning && time !== 0) {
+      setTime(countDown);
+    } else if (time === 0) {
+      timerDone();
+      window.clearInterval(intervalRef.current);
+    } else {
+      window.clearInterval(intervalRef.current);
+    }
+  },  state.isRunning ? 1000 : null );
 
-
-
-class Countdown extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      type: 'Start',
-      value: 'Start',
-      hh: 0,
-      mm: 0,
-      ss: 0,
-      ms: 0,
-    };
-  }
-
-
-
-  render() {
-
-
-    const { interval } = this.state;
-    const tick = () => {
-      this.setState({
-        ss: this.state.ss - 1,
-        ms: setInterval(tick, 10),
-      });
-      
-      console.log('count ' + this.state.hh + ":" + this.state.mm + ":" + this.state.ss);
-      
-      if (this.state.ss == -1) {
-        console.log('This is 59!');
-        this.setState({
-          mm: this.state.mm - 1,
-          ss: 59,
-        });
-      }
-      if (this.state.mm == -1) {
-        console.log('This is 59!');
-        this.setState({
-          hh: this.state.hh - 1,
-          mm: 59,
-        });
-      }
-      if (this.state.hh == -1) {
-        console.log('This is 59!');
-        this.setState({
-          hh: 0,
-        });
-      }
-    };
-
-    // const isRunning = !!interval;
-    return (
-      <Panel>
-        <Display>
-          <DisplayTime hh={this.state.hh} mm={this.state.mm} ss={this.state.ss} ms={this.state.ms} />
-        </Display>
-        <Container>
-        <Input name={'Hours'} value={this.state.hh}
-              onChange={e => {
-                this.setState({
-                  hh: e.target.value,
-                });
-              }}
-            />
-             <Input name={'Minutes'} value={this.state.mm}
-              onChange={e => {
-                this.setState({
-                  mm: e.target.value,
-                });
-              }}
-            />
-             <Input name={'Seconds'} value={this.state.ss}
-              onChange={e => {
-                this.setState({
-                  ss: e.target.value,
-                });
-              }}
-          />
-        </Container>
-        <Container>
-        <Button value={this.state.value} type={this.state.type}
+  useEffect(() => {
+    if (!state.isRunning) {
+      setTime(() => getMs);
+    } 
+  }, );
+  
+  return (
+    <Panel>
+      <DisplayTime>
+        <Section>
+          <LargeText>
+            {formatTime(time)}<br />
+         </LargeText>
+         </Section>
+          </DisplayTime>
+      <Container>
+               <Input value={hh} name="Hours" onChange={(e) => setHH(e.target.value)}/>
+              <Input value={mm} name="Minutes" onChange={(e) => setMM(e.target.value)}/>
+              <Input value={ss} name="Seconds" onChange={(e) => setSS(e.target.value)}/>
+      </Container>
+      <Section>
+      <FlexBetween>
+      <Button
+            type={state.isRunning ? 'stop' : 'start'}
             onClick={() => {
-              if (interval) {
-                clearInterval(interval);
-                this.setState({
-                  interval: null,
-                });
-              } else {
-                this.setState({
-                  interval: setInterval(tick, 10),
-                });
-              }
-              if (this.state.pressed) {
-                this.setState({
-                  type: 'Start',
-                  pressed: false,
-                  down: false,
-                  value: 'Start',
-                });
-              } else {
-                this.setState({
-                  type: 'Stop',
-                  pressed: true,
-                  down: true,
-                  value: 'Stop',
-                });
-          }
-            }}
-          />
-        <Button value={'Reset'} type={'Reset'} onClick={e => {
-                this.setState({
-                  hh: 0,
-                  mm: 0,
-                  ss: 0,
-                  ms: 0,
-                });
-              }} />
-          </Container>
-      </Panel>
-    );
-  }
+              setState({ type: state.isRunning ? 'stop' : 'start' })
+            }}>
+          {state.isRunning ? 'Stop' : 'Start'  }
+          </Button>
+
+          <Button
+            onClick={countReset}>Reset
+          </Button>
+            </FlexBetween>
+   </Section>
+    </Panel>
+  );
 }
+
+ReactDOM.render(
+  <TimerProvider>
+    
+    <Countdown />
+    </TimerProvider>,
+   
+  document.getElementById('root')
+);
 
 export default Countdown;

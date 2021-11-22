@@ -1,40 +1,51 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import styled from "styled-components";
-
 import DocumentationView from "./views/DocumentationView";
 import TimersView from "./views/TimersView";
 
 const Container = styled.div`
-  background: #f0f6fb;
+  background-image: linear-gradient(to right, #5850CE, #4037C4, #342D9F);
   height: 100vh;
   overflow: auto;
+  color: white;
+  font-family: 'Inconsolata', monospace;
 `;
+
+const StyledLi = styled.li`
+  color: white;
+  font-family: 'Inconsolata', monospace;
+  font-size: 30px;
+`;
+
 
 function App() {
   return (
+    
     <Container>
       <Router>
         <nav>
           <ul>
-            <li>
+            <StyledLi >
               <Link to="/">Timers</Link>
-            </li>
-            <li>
-              <Link to="/docs">Documentation</Link>
-            </li>
+            </StyledLi >
+            <StyledLi >
+             <Link to="/docs">Documentation</Link>
+            </StyledLi >
           </ul>
         </nav>
         <Switch>
           <Route path="/docs">
-            <DocumentationView />
+          <DocumentationView />
           </Route>
           <Route path="/">
-            <TimersView />
+          <TimersView/>
           </Route>
         </Switch>
       </Router>
-    </Container>
+      </Container>
+      
+    
   );
 }
 

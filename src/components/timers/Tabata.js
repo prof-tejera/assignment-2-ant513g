@@ -1,194 +1,178 @@
-import React from "react";
-import styled from 'styled-components';
-import Button from '../generic/Button';
+import React, { useContext, useEffect } from "react";
+import ReactDOM from 'react-dom';
 import Panel from '../generic/Panel';
-import Input from "../generic/Input";
-import Container from "../generic/Container";
-import DisplayRounds from "../generic/DisplayRounds";
+import TimerProvider, { TimerContext } from '../../context/TimerProvider';
+import { Container, Label, Section, LargeLabel, FlexBetween, Rounds, LargeText, Border, Column, FlexCenter} from '../../utils/containers';
 import DisplayTime from "../generic/DisplayTime";
-import Display from "../generic/Display";
+import Button from "../generic/Button";
+import Input from "../generic/Input";
+import { useInterval } from "../../hooks/hooks";
+import { formatTime, format } from "../../utils/helpers";
 
-const Label = styled.text`
-padding: 0;
-font-size: 16px;
-color: white;
-border: none;
-margin: 0 0 0 0;
-width: auto;
-vertical-align: middle;
-line-height: 40px;
-font-weight: 600;
-display: block;
-text-align: center;
-`;
-
-const Flex = styled.div`
-padding: 1rem;
-display: flex;
-align-content: center;
-justify-content: space-between;
-min-width: 80px;
-`;
-
-const Hide = styled.div`
-  display: ${props => (props.hide ? 'block' : 'none')};
-  position: relative;
-  width: 100%;
-`;
-
-const Rounds = styled.text`
-  font-family: 'Courier Prime', monospace;
-  box-sizing: border-box;
-  overflow: auto;
-  font-size: 20px;
-  font-weight: 400;
-  vertical-align: middle;
-  display: block;
-  text-align: center;
-`;
-
-const HR = styled.hr`
-  border: 0;
-  height: 1px;
-  background: #25253C;
-  background-image: linear-gradient(to right, #342D9F, #4037C4, #342D9F);
-`;
+// TABATA
+//  An interval timer with work / rest periods.
+//  Example: 20s / 10s, 8 rounds, would count down from 20 seconds to 0,
+//  then count down from 10 seconds to 0, then from 20, then from 10, etc, 
+//  for 8 rounds. A full round includes both the work and rest.
+//  In this case, 20 + 10=30 seconds per round. 
 
 
+const Tabata = ({children}) => {
 
-// The idea for the tabata is when you click the +, it will add a set in the bottom of the application. 
-// Then the user would be able to manually edit each set. The amount of sets equal one round.
-// I thought this way would work better so the user would be able to have more than two types of sets with varying times.
-// The display also shows the rounds and sets (lap) that are left
+  const {
+    time,
+    setTime,
+    ss,
+    setSS,
+    mm,
+    setMM,
+    hh,
+    setHH,
+    resting,
+    setResting,
+    restMM,
+    setRestMM,
+    restSS,
+    setRestSS,
+    totalTime,
+    setTotalTime,
+    rounds,
+    decrementRounds,
+    incrementRounds,
+    setState,
+    state,
+    countDown,
+    timerDone,
+    getMs,
+    getRestMs,
+    roundTime,
+    setRoundTime,
+    restTime,
+    setRestTime,
+    currentRound,
+    setCurrentRound,
+    countReset,
+    fastForward,
+    totalTabata,
+    roundDone,
+  } = useContext(TimerContext);
 
-class Tabata extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      type: 'Start',
-      value: 'Start',
-      rounds: 1,
-      lap: 1,
-      hide: false,
-    };
+  const intervalRef = useInterval(() => {
+    //counting if time is not 0
+    if (state.isRunning && totalTime !== 0) {
+      setTime(countDown);
+      setTotalTime(totalTime - 1);
+      if (time === 0 && resting) {
+        // Setting roundTime - 1
+        // Because if it includes the initial round time, it will also count zero as a number,
+        // which will make the round time left in round greater than the total time left
+        setTime(roundTime - 1);
+        setResting(false);
+        roundDone();
+        if (currentRound >= rounds) {
+          setCurrentRound(currentRound);
+        } else {
+          setCurrentRound(currentRound => currentRound + 1);
+        }
+      } else if (time === 0 && !resting) {
+          setTime(restTime - 1);
+          setResting(true);
+          roundDone();
+        } 
+    } else if (state.isRunning && (totalTime === 0)) {
+      countReset();
+      timerDone();
+      setState({ type: 'stop' });
+    } else {
+      window.clearInterval(intervalRef.current);
+    }
+  },  state.isRunning ? 1000 : null );
+
+  useEffect(() => {
+    if (!state.isRunning) {
+      setTime(() => getMs);
+      setRoundTime(getMs);
+      setRestTime(getRestMs);
+      setTotalTime(totalTabata);
+    } 
+    if (isNaN(time)) {
+      setTotalTime(0);
+  }
+  }, );
+
+
+  return (
+    <React.Fragment>
+      <Panel>
+          <DisplayTime>
+            <Section>
+                  <Label>Total Time Left:</Label>
+                  <Rounds>{formatTime(totalTime)}</Rounds>
+              </Section>
+              <Section>
+              <Label> Time Left in { resting ? 'Rest' : 'Round'}:</Label>
+                  <LargeText> {formatTime(time)}</LargeText>
+              </Section>
+              <Section>
+                  <Label>Rounds:</Label>
+            <Rounds>{currentRound}/{state.rounds}</Rounds>
+              </Section>
+          </DisplayTime>
+          <Section>
+              <LargeLabel>Select Rounds:</LargeLabel>
+              <FlexCenter>
+                  <LargeText>{state.rounds}</LargeText>
+                  <Column>
+                      <Button onClick={incrementRounds}>&#9650;</Button>
+                      <Button onClick={decrementRounds}>&#9660;</Button>
+                  </Column>
+              </FlexCenter>
+        </Section>
+        <Section>
+          <LargeLabel>Set Round Time: {format(hh, mm, ss)}</LargeLabel>
+          <Container>
+              <Input value={hh} name="Hours" onChange={(e) => setHH(e.target.value)}/>
+              <Input value={mm} name="Minutes" onChange={(e) => setMM(e.target.value)}/>
+              <Input value={ss} name="Seconds" onChange={(e) => setSS(e.target.value)}/>
+          </Container>
+        </Section>
+        <Section>
+                 <Border>
+                     <LargeLabel>Set Rest Time: {format(0, restMM, restSS)}</LargeLabel>
+                    <Container>
+              <Input name="Minutes" value={restMM} onChange={(e) => { setRestMM(e.target.value); }} />
+              <Input name="Seconds" value={restSS} onChange={(e) => { setRestSS(e.target.value);  }}/>
+                    </Container>
+                </Border>     
+                </Section>
+          
+    <Section>    
+<FlexBetween>
+<Button
+            type={state.isRunning ? 'stop' : 'start'}
+            onClick={() => { setState({ type: state.isRunning ? 'stop' : 'start'}) }}>
+          {state.isRunning ? 'Stop' : 'Start'  }
+              </Button>
+              
+              <Button onClick={countReset}>Reset</Button>
+              
+            <Button onClick={fastForward} >Skip</Button>
+  </FlexBetween>
+    </Section>
+    
+
+
+
+
+</Panel>
+</React.Fragment>);
   }
   
-  render() {
-    return (
-      <Panel>
-        <Display>
-          <Label>Time Left:</Label>
-          <DisplayTime name={'Rounds'}  hh={this.state.hh} mm={this.state.mm} ss={this.state.ss} ms='00' />
-          <Container>
-              <Label>Rounds Left:
-              <Rounds>{this.state.rounds}</Rounds>
-              </Label>
-              <Label>Sets Left:
-              <Rounds>{this.state.lap}</Rounds>
-              </Label>
-          </Container>
-        </Display>
-        <Flex>
-          <Container>
-            <Flex> 
-        <Label> Rounds:
-          <Rounds>{this.state.rounds} </Rounds>
-        </Label>
-        </Flex>
-        <div>
-          <Button size={'small'} value={'+'} onClick={() => { this.setState(oldState => { const { rounds: oldCurrent } = oldState; return { rounds: oldCurrent + 1, }; },); }} />
-          <Button size={'small'} value={'-'} onClick={() => { this.setState(oldState => { const { rounds: oldCurrent } = oldState; return { rounds: oldCurrent - 1,};},);}} /> 
-        </div>
-        </Container>
-
-        <Container>
-            <Flex>
-              {/* In this app, it is call Sets instead of lap, although the functionality is the same */}
-          <Label>Sets:
-            <Rounds>{this.state.lap}</Rounds>
-          </Label>
-          </Flex>
-          <div>
-              <Button size={'small'} value={'+'}
-                onClick={() => {
-                  this.setState(oldState => {
-                    const { lap: oldCurrent } = oldState;
-                    return {
-                      lap: oldCurrent + 1,
-                    };
-                  });
-                }} />
-            <Button size={'small'} value={'-'} onClick={() => { this.setState(oldState => {const { lap: oldCurrent } = oldState;return {lap: oldCurrent - 1,}; });}} /> 
-          </div>
-          </Container>
-        
-        </Flex>
-
-
-
-        <DisplayRounds name={'Set'} lap={1} hhLap={this.state.hhLap} mmLap={this.state.mmLap} ssLap={this.state.ssLap} msLap={0}/>
-        <Hide hide={this.state.hide}>
-          <Container>
-            <Input name={'Hours'} value={this.state.hh} onChange={e => { this.setState({hhLap: e.target.value,});}}/>
-            <Input name={'Minutes'} value={this.state.mm} onChange={e => {this.setState({mmLap: e.target.value,});}} />
-            <Input name={'Seconds'} value={this.state.ss} onChange={e => {this.setState({ ssLap: e.target.value,}); }} />
-          </Container>
-        </Hide> 
-        <Button
-          size={'small'}
-          pressed={this.state.pressed}
-          value={'Edit'}
-          onClick={() => {
-            if (this.state.pressed) {
-              this.setState({
-                hide: true,
-                pressed: false,
-              });
-              console.log('YES');
-            } else {
-              this.setState({
-                hide: false,
-                pressed: true,
-              });
-              console.log('NO');
-            }
-          }} 
-        />
-        
-      
-        <HR />
-        <Container>
-          <Button value={this.state.value} type={this.state.type}
-            onClick = {() => { if (this.state.pressed) {
-                  this.setState({
-                    type: 'Start',
-                    pressed: false,
-                    value: 'Start',
-                  });
-                } else {
-                  this.setState({
-                    type: 'Stop',
-                    pressed: true,
-                    value: 'Stop',
-                  }); } } }/>
-          <Button value={'Reset'} type={'Reset'} className="something"  onClick={e => {
-          this.setState({
-            hh: 0,
-            mm: 0,
-            ss: 0,
-            rounds: 0,
-            lap: 0,
-            hhLap: 0,
-            mmLap: 0,
-            ssLap: 0,
-          }); }} />
-        </Container>
-       
-        
-      </Panel>
-    );
-  }
-}
-
-
-export default Tabata;
+ReactDOM.render(
+  <TimerProvider>
+    <Tabata />
+  </TimerProvider>,
+    document.getElementById('root')
+  );
+  
+  export default Tabata;

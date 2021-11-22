@@ -1,6 +1,5 @@
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 
 const BoxContainer = styled.div `
   text-align: center;
@@ -16,18 +15,18 @@ const BoxContainer = styled.div `
 `;
   
 const Select = styled.select`
-width: 50px;
-display: block;
-font-family: 'Inconsolata', monospace;
-font-size: 16px;
-color: #f2f2f2;
-background-color: #4A4A55;
-border: none;
-text-align: center;
-font-weight: 500;
-margin: 8px;
-border-radius: 8px;
-cursor: pointer; 
+  width: 50px;
+  display: block;
+  font-family: 'Inconsolata', monospace;
+  font-size: 16px;
+  color: #f2f2f2;
+  background-color: #4A4A55;
+  border: none;
+  text-align: center;
+  font-weight: 500;
+  margin: 8px;
+  border-radius: 8px;
+  cursor: pointer; 
 `;
 
 const Option = styled.option`
@@ -38,26 +37,33 @@ const Option = styled.option`
 `;
 
 const Label = styled.label`
-
-font-family: 'Courier Prime', monospace;
-font-size: 16px;
-color: white;
-border: none;
-text-align: center;
-margin: auto;
-text-align: center;
+  font-family: 'Courier Prime', monospace;
+  font-size: 16px;
+  color: white;
+  border: none;
+  text-align: center;
+  margin: auto;
+  text-align: center;
 `;
 
-const Input = (props) => {
-  // const { value } = this.state;
-    const { onChange, value } = props;
+
+export default function Input(props) {
+
+  const { onChange, value, name } = props;
+  
   return (
+
     <BoxContainer>
-       <Label for={props.name} value={value}>{props.name}</Label>
-        <Select
-          name={props.name}
-          size="5"
-          onChange={props.onChange}
+      <Label
+        HTMLfor={name}
+        value={value}>
+        {name}
+      </Label>
+      <Select
+        name={name}
+        size="5"
+        onChange={onChange}
+        value={value}
         >
           <Option value='0'>0</Option>
           <Option value='1'>1</Option>
@@ -121,29 +127,13 @@ const Input = (props) => {
           <Option value='59'>59</Option>
         </Select>
       </ BoxContainer>
+     
   );
 }
 
-
-Input.defaultProps = {
-  rounds: 0,
-};
-
-Input.propTypes = {
-    value: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
-      PropTypes.node,
-    ]),
-    name: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
-      PropTypes.node,
-    ]),
-}
-  
 ReactDOM.render(
   <Input />,
+  
   document.getElementById('root')
 );
-export default Input;
+
