@@ -62,7 +62,7 @@ class Documentation extends React.Component {
               {
                 prop: "onChange",
                 description: "Binds the onChange",
-                type: "n/a",
+                type: "Function",
                 defaultValue: "n/a",
               },
               
@@ -81,7 +81,7 @@ class Documentation extends React.Component {
               {
                 prop: "onChange",
                 description: "Binds the onChange",
-                type: "n/a",
+                type: "Function",
                 defaultValue: "n/a",
               },
               
